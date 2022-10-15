@@ -1,101 +1,152 @@
-#include<stdio.h>
-#include<stdlib.h>
-
+#include <stdio.h>
+#include <stdlib.h>
+ 
 struct node
 {
-    int data;
-    struct node *next;
-};
-typedef struct
+    int info;
+    struct node *ptr;
+}*top,*top1,*temp;
+ 
+int topelement();
+void push(int data);
+void pop();
+void display();
+void destroy();
+void stack_count();
+void create();
+ 
+int count = 0;
+ 
+int main()
 {
-    struct node * top;
-}STACK;
-
-int push(STACK *s,int v)
-{
-    struct node *temp;
-    temp = (struct node *)malloc(sizeof(struct node));
-    if(temp==NULL)
+    int n, ch, e;
+ 
+    printf("\n 1 - Push");
+    printf("\n 2 - Pop");
+    printf("\n 3 - Top");
+    printf("\n 4 - Dipslay");
+    printf("\n 5 - Stack Count");
+    printf("\n 6 - Destroy stack");
+    printf("\n 7 - Exit");
+ 
+    create();
+ 
+    while (1)
     {
-        //printf("Overflow");
-        return 1;
+        printf("\n Enter choice : ");
+        scanf("%d", &ch);
+ 
+        switch (ch)
+        {
+        case 1:
+            printf("Enter data : ");
+            scanf("%d", &n);
+            push(n);
+            break;
+        case 2:
+            pop();
+            break;
+        case 3:
+            if (top == NULL)
+                printf("No elements in stack");
+            else
+            {
+                e = topelement();
+                printf("\n Top element : %d", e);
+            }
+            break;
+        case 4:
+            display();
+            break;
+        case 5:
+            stack_count();
+            break;
+        case 6:
+            destroy();
+            break;
+        case 7:
+            exit(0);
+        default :
+            printf(" Wrong choice, Please enter correct choice  ");
+            break;
+        }
     }
-    temp->data=v;
-    temp->next=s->top;
-    s->top=temp;
-    return 0;
 }
-int pop(STACK *s,struct node **v)
+void create()
 {
-    struct node *temp;
-    if(s->top==NULL)
-    {
-        //printf("Underflow");
-        return 1;
-    }
-    temp=s->top;
-    s->top=temp->next;
-    *v=temp;
-    return 0;
+    top = NULL;
 }
-void traverse(STACK *s)
+void stack_count()
 {
-    if(s->top==NULL)
+    printf("\n No. of elements in stack : %d", count);
+}
+void push(int data)
+{
+    if (top == NULL)
     {
-        printf("Stack is empty\n");
+        top =(struct node *)malloc(1*sizeof(struct node));
+        top->ptr = NULL;
+        top->info = data;
     }
     else
     {
-        struct node *temp;
-        printf("Stack elements are:\n");
-        for(temp=s->top;temp!=NULL;temp=temp->next)
-        {
-            printf("%d",temp->data);
-        }
+        temp =(struct node *)malloc(1*sizeof(struct node));
+        temp->ptr = top;
+        temp->info = data;
+        top = temp;
     }
+    count++;
 }
-int main()
+void display()
 {
-    struct node *m;
-    STACK s1;
-    s1.top = NULL;
-    int ch,v,q,k;
-    while(1)
+    top1 = top;
+ 
+    if (top1 == NULL)
     {
-        printf("\n1.Push\n");
-        printf("2.Pop\n");
-        printf("3.Traverse\n");
-        printf("4.Quit\n");
-        printf("\n");
-        printf("Enter your choice: ");
-        scanf("%d",&ch);
-
-        switch(ch)
-        {
-            case 1:
-                printf("Enter element: ");
-                scanf("%d",&v);
-                k=push(&s1,v);
-                if(k==1)
-                  printf("Stack Overflow\n");
-                else
-                  printf("%d pushed\n",v);
-                break;
-            case 2:
-                q=pop(&s1,&m);
-                if(q==1)
-                    printf("Stack is underflow\n");
-                else
-                    printf("Popped item is %d\n",m->data);
-                break;
-            case 3:
-                traverse(&s1);
-                break;
-            case 4:
-                exit(0);
-                break;
-            default:
-                printf("Invalid choice\n");
-        }
+        printf("Stack is empty");
+        return;
     }
+ 
+    while (top1 != NULL)
+    {
+        printf("%d ", top1->info);
+        top1 = top1->ptr;
+    }
+ }
+void pop()
+{
+    top1 = top;
+ 
+    if (top1 == NULL)
+    {
+        printf("\n Error : Trying to pop from empty stack");
+        return;
+    }
+    else
+        top1 = top1->ptr;
+    printf("\n Popped value : %d", top->info);
+    free(top);
+    top = top1;
+    count--;
+}
+int topelement()
+{
+    return(top->info);
+}
+void destroy()
+{
+    top1 = top;
+ 
+    while (top1 != NULL)
+    {
+        top1 = top->ptr;
+        free(top);
+        top = top1;
+        top1 = top1->ptr;
+    }
+    free(top1);
+    top = NULL;
+ 
+    printf("\n All stack elements destroyed");
+    count = 0;
 }
